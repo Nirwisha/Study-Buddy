@@ -1,7 +1,499 @@
 <!DOCTYPE html>
-<html>
-  
-  <head>
-    <title>Study Buddy</title>
-  </head>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specs - Study Buddy Finder</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-section">
+                <div class="logo-icon">🎓</div>
+                <h1 class="logo-text">Specs</h1>
+            </div>
+            <div class="nav-buttons">
+
+                <!-- FIX: all buttons were "nav-btn-active", only Home gets active by default -->
+                <button class="nav-btn active" onclick="showTab('home')" data-tab="home">
+                    <span class="btn-icon">🏠</span>
+                    <span class="btn-text">Home</span>
+                </button>
+                <button class="nav-btn" onclick="showTab('findBuddy')" data-tab="findBuddy">
+                    <span class="btn-icon">🔍</span>
+                    <span class="btn-text">Find Buddy</span>
+                </button>
+                <button class="nav-btn" onclick="showTab('sessions')" data-tab="sessions">
+                    <span class="btn-icon">📅</span>
+                    <span class="btn-text">Sessions</span>
+                </button>
+                <!-- FIX: was labeled "Sessions", missing badge -->
+                <button class="nav-btn" onclick="showTab('invites')" data-tab="invites">
+                    <span class="btn-icon">📬</span>
+                    <span class="btn-text">Your Invites</span>
+                    <span class="badge" id="inviteCount">0</span>
+                </button>
+                <button class="nav-btn" onclick="showTab('messages')" data-tab="messages">
+                    <span class="btn-icon">💬</span>
+                    <span class="btn-text">Messages</span>
+                </button>
+                <button class="nav-btn" onclick="showTab('profile')" data-tab="profile">
+                    <span class="btn-icon">👤</span>
+                    <span class="btn-text">Profile</span>
+                </button>
+
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <!-- TAB 1: HOME -->
+        <section id="homeTab" class="tab-content active">
+            <div class="content-wrapper">
+
+                <div class="welcome-header">
+                    <h2>Hello, <span id="userName">Student</span>!</h2>
+                    <p class="welcome-subtitle">Your study sessions and upcoming activities</p>
+                </div>
+
+                <div class="calendar-section">
+                    <h3>📅 Upcoming Sessions</h3>
+                    <div id="upcomingSessions" class="upcoming-sessions-list">
+                        <div class="empty-state">
+                            <p>No upcoming sessions scheduled</p>
+                            <button class="btn btn-primary" onclick="showTab('sessions')">
+                                Create a Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FIX: stats grid was missing entirely -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🤝</div>
+                        <div class="stat-value" id="buddyCount">0</div>
+                        <div class="stat-label">Study Buddies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-value" id="sessionCount">0</div>
+                        <div class="stat-label">Sessions This Week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📬</div>
+                        <div class="stat-value" id="pendingInvites">0</div>
+                        <div class="stat-label">Pending Invites</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 2: FIND BUDDY -->
+        <section id="findBuddyTab" class="tab-content">
+            <div class="content-wrapper">
+
+                <div class="section-header">
+                    <h2>Find Study Buddy</h2>
+                    <p>Swipe through classmates and invite them to connect</p>
+                </div>
+
+                <!-- FIX: filter panel and swipe layout were missing -->
+                <div class="filter-panel">
+                    <div class="filter-item">
+                        <label class="filter-label">
+                            <span class="label-icon">📚</span>
+                            <span class="label-text">Filter by Course</span>
+                        </label>
+                        <select id="courseFilter" class="filter-select" onchange="filterBuddies()">
+                            <option value="">All Courses</option>
+                            <option value="PHYS101">PHYS 101 - Physics I</option>
+                            <option value="CHEM101">CHEM 101 - General Chemistry</option>
+                            <option value="BIOCHEM201">BIOCHEM 201 - Biochemistry</option>
+                            <option value="MATH201">MATH 201 - Calculus II</option>
+                            <option value="CS101">CS 101 - Computer Science</option>
+                        </select>
+                    </div>
+                    <div class="filter-results">
+                        <p><strong id="buddyFilterCount">0</strong> students found</p>
+                    </div>
+                </div>
+
+                <div class="swipe-area">
+                    <div id="studentProfiles" class="swipe-stack">
+                        <!-- Profile cards injected by JS -->
+                    </div>
+                    <div class="swipe-controls">
+                        <button class="swipe-btn" onclick="prevCard()">←</button>
+                        <span class="swipe-counter" id="swipeCounter">—</span>
+                        <button class="swipe-btn" onclick="nextCard()">→</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: SESSIONS -->
+        <section id="sessionsTab" class="tab-content">
+            <div class="content-wrapper">
+
+                <div class="section-header">
+                    <h2>Study Sessions</h2>
+                    <p>Create and manage your study sessions</p>
+                </div>
+
+                <div class="session-tabs">
+                    <button class="session-tab-btn active" onclick="showSessionType('created')" data-type="created">
+                        <span>Created Sessions</span>
+                    </button>
+                    <button class="session-tab-btn" onclick="showSessionType('joined')" data-type="joined">
+                        <span>Joined Sessions</span>
+                    </button>
+                </div>
+
+                <!-- FIX: class was "sess" and closing tag had the id/class on it -->
+                <div id="createdSessionsList" class="session-list active">
+                    <div class="session-header-actions">
+                        <button class="btn btn-primary" onclick="openCreateSessionModal()">
+                            ➕ Create New Session
+                        </button>
+                    </div>
+                    <div id="createdSessionsContent" class="sessions-content">
+                        <div class="empty-state">
+                            <p>You haven't created any sessions yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="joinedSessionsList" class="session-list">
+                    <div id="joinedSessionsContent" class="sessions-content">
+                        <div class="empty-state">
+                            <p>You haven't joined any sessions yet</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 4: YOUR INVITES -->
+        <section id="invitesTab" class="tab-content">
+            <div class="content-wrapper">
+
+                <div class="section-header">
+                    <h2>Your Invites</h2>
+                    <p>Manage buddy invitations</p>
+                </div>
+
+                <div class="invite-tabs">
+                    <button class="invite-tab-btn active" onclick="showInviteType('received')" data-type="received">
+                        <span>Received Invites</span>
+                        <span class="badge" id="receivedInviteCount">0</span>
+                    </button>
+                    <button class="invite-tab-btn" onclick="showInviteType('sent')" data-type="sent">
+                        <span>Sent Invites</span>
+                        <span class="badge" id="sentInviteCount">0</span>
+                    </button>
+                </div>
+
+                <!-- FIX: received div had sentInvitesContent as its id -->
+                <div id="receivedInvitesList" class="invite-list active">
+                    <div id="receivedInvitesContent" class="invites-content">
+                        <div class="empty-state">
+                            <p>No pending invites</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sentInvitesList" class="invite-list">
+                    <div id="sentInvitesContent" class="invites-content">
+                        <div class="empty-state">
+                            <p>You haven't sent any invites yet</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 5: MESSAGES -->
+        <section id="messagesTab" class="tab-content">
+            <div class="content-wrapper">
+                <div class="chat-layout">
+
+                    <!-- FIX: was "chat-siderbar" typo -->
+                    <div class="chat-sidebar">
+                        <h3>💬 Conversations</h3>
+                        <div id="conversationsList" class="conversations-list">
+                            <div class="empty-state">
+                                <p>No conversations yet</p>
+                                <p class="help-text">Connect with buddies to start chatting</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-window">
+                        <div id="chatHeader" class="chat-header" style="display:none;">
+                            <div class="chat-partner-info">
+                                <div class="chat-avatar" id="chatPartnerAvatar">?</div>
+                                <div>
+                                    <div class="chat-partner-name" id="chatPartnerName">Select a buddy</div>
+                                    <div class="chat-partner-status">Online</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="chatMessages" class="chat-messages">
+                            <div class="chat-empty">
+                                <h3>👋 Select a Conversation</h3>
+                                <p>Choose a buddy from the left to start messaging</p>
+                            </div>
+                        </div>
+
+                        <div id="chatInput" class="chat-input" style="display:none;">
+                            <input type="text" id="messageInput" class="message-input"
+                                   placeholder="Type a message..."
+                                   onkeypress="handleMessageKeyPress(event)">
+                            <button class="send-btn" onclick="sendMessage()">📨</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: PROFILE -->
+        <section id="profileTab" class="tab-content">
+            <div class="content-wrapper">
+                <div class="profile-container">
+
+                    <div class="profile-header">
+                        <h2>Your Profile</h2>
+                        <p>Complete your profile to find compatible study buddies</p>
+                    </div>
+
+                    <form id="profileForm" class="profile-form">
+
+                        <!-- Basic Info -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Basic Information</h3>
+                            <div class="form-group">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text" id="profileName" class="form-input"
+                                       placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">University *</label>
+                                    <select id="profileUniversity" class="form-input" required>
+                                        <option value="">Select University</option>
+                                        <option value="Cal Poly Pomona">Cal Poly Pomona</option>
+                                        <option value="UCLA">UCLA</option>
+                                        <option value="USC">USC</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Major *</label>
+                                    <input type="text" id="profileMajor" class="form-input"
+                                           placeholder="e.g., Physics, Chemistry" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Courses -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Your Courses</h3>
+                            <div id="courseEntries" class="course-entries">
+                                <!-- JS fills this in -->
+                            </div>
+                            <!-- FIX: was "onclic" missing the k -->
+                            <button type="button" class="add-course-btn" onclick="openAddCourseRow()">
+                                + Add Course
+                            </button>
+                            <div id="addCourseForm" class="add-course-form" style="display:none;">
+                                <div class="add-course-fields">
+                                    <div class="form-group">
+                                        <label class="form-label">Class Name *</label>
+                                        <input type="text" id="newCourseName" class="form-input"
+                                               placeholder="e.g. PHYS 101 - Physics I">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Professor</label>
+                                        <input type="text" id="newCourseProfessor" class="form-input"
+                                               placeholder="e.g. Dr. Smith">
+                                    </div>
+                                </div>
+                                <!-- FIX: Add button was missing, only had Cancel -->
+                                <div class="add-course-actions">
+                                    <button type="button" class="btn btn-primary" onclick="saveCourseEntry()">Add</button>
+                                    <button type="button" class="btn btn-secondary" onclick="closeAddCourseRow()">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Availability -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Your Availability</h3>
+                            <p class="help-text" style="margin-bottom:1.25rem;">
+                                Check the times you're generally free to study
+                            </p>
+                            <div class="availability-grid">
+                                <div class="avail-corner"></div>
+                                <div class="avail-time-label">Morning<br><span>8am – 12pm</span></div>
+                                <div class="avail-time-label">Afternoon<br><span>12pm – 5pm</span></div>
+                                <div class="avail-time-label">Evening<br><span>5pm – 10pm</span></div>
+
+                                <div class="avail-day">Mon</div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Mon-Morning"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Mon-Afternoon"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Mon-Evening"></div>
+
+                                <div class="avail-day">Tue</div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Tue-Morning"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Tue-Afternoon"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Tue-Evening"></div>
+
+                                <div class="avail-day">Wed</div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Wed-Morning"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Wed-Afternoon"></div>
+                                <!-- FIX: was "WEd-Evening" -->
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Wed-Evening"></div>
+
+                                <div class="avail-day">Thu</div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Thu-Morning"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Thu-Afternoon"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Thu-Evening"></div>
+
+                                <div class="avail-day">Fri</div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Fri-Morning"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Fri-Afternoon"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Fri-Evening"></div>
+
+                                <div class="avail-day">Sat</div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Sat-Morning"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Sat-Afternoon"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Sat-Evening"></div>
+
+                                <div class="avail-day">Sun</div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Sun-Morning"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Sun-Afternoon"></div>
+                                <div class="avail-cell"><input type="checkbox" name="avail" value="Sun-Evening"></div>
+                            </div>
+                        </div>
+
+                        <!-- Study Qualities -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Your Study Qualities</h3>
+                            <p class="section-description">Select qualities that describe your study habits</p>
+                            <div class="form-group">
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="qualities" value="Organized">
+                                        <span>📊 Organized - Make plans ahead and keep things structured</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="qualities" value="Productive">
+                                        <span>⚡ Productive - Stay locked in and get things done</span>
+                                    </label>
+                                    <!-- FIX: was using value="Productive" for Patient -->
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="qualities" value="Patient">
+                                        <span>😊 Patient - Good at explaining concepts</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Study Goals and Preferences</h3>
+                            <div class="form-group">
+                                <label class="form-label">About Me</label>
+                                <!-- FIX: was "<text area" with a space, breaking the element -->
+                                <textarea id="profileBio" class="form-textarea" rows="4"
+                                          placeholder="Briefly describe your study approach and goals..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">Save Profile</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CREATE SESSION MODAL -->
+    <!-- FIX: form was missing onsubmit so the Create button did nothing -->
+    <div id="createSessionModal" class="modal-overlay">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 class="modal-title">Create Study Session</h2>
+                <button class="modal-close" onclick="closeCreateSessionModal()">✕</button>
+            </div>
+            <form id="createSessionForm" class="session-form" onsubmit="handleCreateSession(event)">
+                <div class="form-section">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date *</label>
+                            <input type="date" id="sessionDate" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Time *</label>
+                            <input type="time" id="sessionTime" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Location *</label>
+                        <input type="text" id="sessionLocation" class="form-input"
+                               placeholder="e.g. Library 2nd Floor, Student Union, Zoom..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Session Type *</label>
+                        <input type="text" id="sessionType" class="form-input"
+                               placeholder="e.g. Silent Study, Group Discussion, Practice Problems..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Session Goal *</label>
+                        <input type="text" id="sessionGoal" class="form-input"
+                               placeholder="e.g. Review chapters 7-9, Complete midterm review" required>
+                    </div>
+
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary btn-large">Create Session</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateSessionModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PROFILE VIEW MODAL -->
+    <div id="profileViewModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeProfileViewModal()">✕</button>
+            </div>
+            <div id="profileViewContent" class="profile-view-content">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
 </html>
