@@ -74,7 +74,6 @@
                     </div>
                 </div>
 
-                <!-- FIX: stats grid was missing entirely -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">🤝</div>
@@ -105,7 +104,6 @@
                     <p>Swipe through classmates and invite them to connect</p>
                 </div>
 
-                <!-- FIX: filter panel and swipe layout were missing -->
                 <div class="filter-panel">
                     <div class="filter-item">
                         <label class="filter-label">
@@ -158,7 +156,6 @@
                     </button>
                 </div>
 
-                <!-- FIX: class was "sess" and closing tag had the id/class on it -->
                 <div id="createdSessionsList" class="session-list active">
                     <div class="session-header-actions">
                         <button class="btn btn-primary" onclick="openCreateSessionModal()">
@@ -203,7 +200,6 @@
                     </button>
                 </div>
 
-                <!-- FIX: received div had sentInvitesContent as its id -->
                 <div id="receivedInvitesList" class="invite-list active">
                     <div id="receivedInvitesContent" class="invites-content">
                         <div class="empty-state">
@@ -228,7 +224,6 @@
             <div class="content-wrapper">
                 <div class="chat-layout">
 
-                    <!-- FIX: was "chat-siderbar" typo -->
                     <div class="chat-sidebar">
                         <h3>💬 Conversations</h3>
                         <div id="conversationsList" class="conversations-list">
@@ -330,7 +325,6 @@
                                                placeholder="e.g. Dr. Smith">
                                     </div>
                                 </div>
-                                <!-- FIX: Add button was missing, only had Cancel -->
                                 <div class="add-course-actions">
                                     <button type="button" class="btn btn-primary" onclick="saveCourseEntry()">Add</button>
                                     <button type="button" class="btn btn-secondary" onclick="closeAddCourseRow()">Cancel</button>
@@ -402,7 +396,6 @@
                                         <input type="checkbox" name="qualities" value="Productive">
                                         <span>⚡ Productive - Stay locked in and get things done</span>
                                     </label>
-                                    <!-- FIX: was using value="Productive" for Patient -->
                                     <label class="checkbox-label">
                                         <input type="checkbox" name="qualities" value="Patient">
                                         <span>😊 Patient - Good at explaining concepts</span>
@@ -416,7 +409,6 @@
                             <h3 class="form-section-title">Study Goals and Preferences</h3>
                             <div class="form-group">
                                 <label class="form-label">About Me</label>
-                                <!-- FIX: was "<text area" with a space, breaking the element -->
                                 <textarea id="profileBio" class="form-textarea" rows="4"
                                           placeholder="Briefly describe your study approach and goals..."></textarea>
                             </div>
@@ -434,7 +426,6 @@
     </main>
 
     <!-- CREATE SESSION MODAL -->
-    <!-- FIX: form was missing onsubmit so the Create button did nothing -->
     <div id="createSessionModal" class="modal-overlay">
         <div class="modal-content modal-large">
             <div class="modal-header">
