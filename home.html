@@ -36,7 +36,7 @@
                 <button class="nav-btn" onclick="showTab('invites')" data-tab="invites">
                     <span class="btn-icon">📬</span>
                     <span class="btn-text">Your Invites</span>
-                    <span class="badge" id="inviteCount">0</span>
+                    <span class="badge">!</span>
                 </button>
                 <button class="nav-btn" onclick="showTab('messages')" data-tab="messages">
                     <span class="btn-icon">💬</span>
@@ -73,6 +73,9 @@
                         </div>
                     </div>
                 </div>
+
+                
+
             </div>
         </section>
 
@@ -289,7 +292,6 @@
                             <div id="courseEntries" class="course-entries">
                                 <!-- JS fills this in -->
                             </div>
-                            <!-- FIX: was "onclic" missing the k -->
                             <button type="button" class="add-course-btn" onclick="openAddCourseRow()">
                                 + Add Course
                             </button>
