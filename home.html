@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Specs - Study Buddy Finder</title>
     <link rel="stylesheet" href="style.css">
+    <script src="app.js"></script>
 </head>
 
 <body>
@@ -59,7 +60,7 @@
 
                 <div class="welcome-header">
                     <h2>Hello, <span id="userName">Student</span>!</h2>
-                    <p class="welcome-subtitle">Your study sessions and upcoming activities</p>
+                    <p class="welcome-subtitle">Here are your study sessions and upcoming activities!</p>
                 </div>
 
                 <div class="calendar-section">
@@ -74,7 +75,24 @@
                     </div>
                 </div>
 
-      
+                <!-- FIX: stats grid was missing entirely -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🤝</div>
+                        <div class="stat-value" id="buddyCount">0</div>
+                        <div class="stat-label">Study Buddies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-value" id="sessionCount">0</div>
+                        <div class="stat-label">Sessions This Week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📬</div>
+                        <div class="stat-value" id="pendingInvites">0</div>
+                        <div class="stat-label">Pending Invites</div>
+                    </div>
+                </div>
 
             </div>
         </section>
@@ -379,7 +397,6 @@
                                         <input type="checkbox" name="qualities" value="Productive">
                                         <span>⚡ Productive - Stay locked in and get things done</span>
                                     </label>
-                                    <!-- FIX: was using value="Productive" for Patient -->
                                     <label class="checkbox-label">
                                         <input type="checkbox" name="qualities" value="Patient">
                                         <span>😊 Patient - Good at explaining concepts</span>
@@ -393,7 +410,6 @@
                             <h3 class="form-section-title">Study Goals and Preferences</h3>
                             <div class="form-group">
                                 <label class="form-label">About Me</label>
-                                <!-- FIX: was "<text area" with a space, breaking the element -->
                                 <textarea id="profileBio" class="form-textarea" rows="4"
                                           placeholder="Briefly describe your study approach and goals..."></textarea>
                             </div>

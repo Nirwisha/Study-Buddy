@@ -1,0 +1,517 @@
+/* GENERAL SETUP */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: rgb(231, 243, 236);
+    color: #114d3f;
+}
+
+/* NAVBAR */
+.navbar {
+    background-color: rgb(231, 243, 236);
+    border-bottom: 1px solid #ddd;
+    padding: 15px 30px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    font-size: 28px;
+}
+
+.logo-text {
+    font-size: 28px;
+    color: #114d3f;
+}
+
+/* NAV BUTTONS */
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    border: none;
+    background-color: transparent;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.nav-btn:hover {
+    background-color: #c1f6e3;
+}
+
+.nav-btn.active {
+    background-color: #91dcba;
+    color: #114d3f;
+    font-weight: bold;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    padding: 30px;
+}
+
+.content-wrapper {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* TABS */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* HOME PAGE LAYOUT */
+.welcome-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.welcome-header h2 {
+    font-size: 36px;
+    color: #114d3f;
+}
+
+.welcome-subtitle {
+    color: #313d3a;
+    font-size: 18px;
+}
+
+/* CALENDAR SECTION */
+.calendar-section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.calendar-section h3 {
+    font-size: 28px;
+    color: #114d3f;
+    margin-bottom: 20px;
+}
+
+.upcoming-sessions-list {
+    padding: 15px;
+    text-align: center;
+}
+
+.empty-state {
+    color: #313d3a;
+}
+
+/* BUTTONS */
+.btn {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-primary {
+    background-color: #91dcba;
+    color: #114d3f;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.btn-primary:hover {
+    background-color: #196c59;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: #111827;
+}
+
+.btn-large {
+    padding: 12px 22px;
+}
+
+/* SECTION HEADERS */
+.section-header {
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.section-header p,
+.help-text,
+.section-description {
+    color: #6b7280;
+}
+
+/* FIND BUDDY */
+.filter-panel {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.filter-item {
+    margin-bottom: 15px;
+}
+
+.filter-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+}
+
+.swipe-area {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.swipe-stack {
+    min-height: 300px;
+}
+
+.swipe-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.swipe-btn {
+    border: none;
+    background: #91dcba;
+    color: #114d3f;
+    font-size: 22px;
+    padding: 10px 18px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* SESSIONS + INVITES TABS */
+.session-tabs,
+.invite-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.session-tab-btn,
+.invite-tab-btn {
+    border: none;
+    background: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #114d3f;
+    font-weight: bold;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+}
+
+.session-tab-btn.active,
+.invite-tab-btn.active {
+    background-color: #91dcba;
+    color: #114d3f;
+    font-weight: bold;
+}
+
+.session-tab-btn:not(.active):hover,
+.invite-tab-btn:not(.active):hover {
+    background-color: #c1f6e3;
+}
+
+.session-list,
+.invite-list {
+    display: none;
+}
+
+.session-list.active,
+.invite-list.active {
+    display: block;
+}
+
+.session-header-actions {
+    margin-bottom: 20px;
+}
+
+.sessions-content,
+.invites-content {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* BADGES */
+.badge {
+    background: #196c59;
+    color: white;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    margin-left: 6px;
+}
+
+/* MESSAGES */
+.chat-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 24px;
+}
+
+.chat-sidebar,
+.chat-window {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.chat-window {
+    min-height: 500px;
+}
+
+.chat-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.chat-partner-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-avatar {
+    background: #91dcba;
+    color: #114d3f;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-messages {
+    min-height: 350px;
+}
+
+.chat-empty {
+    text-align: center;
+    color: #6b7280;
+    margin-top: 100px;
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+.message-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+}
+
+.send-btn {
+    border: none;
+    background: #91dcba;
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* PROFILE */
+.profile-container {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.profile-header {
+    margin-bottom: 25px;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-section-title {
+    margin-bottom: 15px;
+    color: #114d3f;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-family: inherit;
+}
+
+.form-row,
+.add-course-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.add-course-btn {
+    border: none;
+    background: #91dcba;
+    color: #114d3f;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add-course-form {
+    margin-top: 18px;
+    background: #f4fbf7;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.add-course-actions,
+.form-actions,
+.modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* AVAILABILITY */
+.availability-grid {
+    display: grid;
+    grid-template-columns: 90px repeat(3, 1fr);
+    gap: 8px;
+}
+
+.avail-time-label,
+.avail-day,
+.avail-cell {
+    background: #f4fbf7;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.avail-day {
+    font-weight: bold;
+}
+
+.avail-cell:has(input:checked) {
+    background: #91dcba;
+}
+
+/* CHECKBOXES */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-label {
+    background: #f4fbf7;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* MODAL OVERLAY (Hidden by Default) */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 24px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+}
+
+.modal-large {
+    max-width: 800px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-close {
+    border: none;
+    background: none;
+    font-size: 22px;
+    cursor: pointer;
+}   
