@@ -54,6 +54,7 @@ let sentInvites = [];
 let receivedInvites = [];
 let conversations = [];
 let activeConversationId = null;
+let savedProfile = JSON.parse(localStorage.getItem("savedProfile")) || {};
 
 function $(id) {
     return document.getElementById(id);
@@ -159,6 +160,7 @@ function closeProfileViewModal() {
 
 function inviteBuddy(studentId, sessionTitle = "Study Buddy Match") {
     const student = students.find(item => item.id === studentId);
+
     const invite = {
         id: Date.now(),
         studentId,
@@ -167,17 +169,16 @@ function inviteBuddy(studentId, sessionTitle = "Study Buddy Match") {
         title: sessionTitle
     };
 
+    // Only sent invites should increase
     sentInvites.unshift(invite);
-    receivedInvites.unshift({
-        ...invite,
-        name: student.name,
-        title: `${student.name} accepted your invite`
-    });
 
+    // Add dummy message from invited buddy
     addAutoMessage(student, sessionTitle);
+
     updateAllViews();
     closeProfileViewModal();
-    showToast(`${student.name} accepted your invite and sent a message.`);
+
+    showToast(`${student.name} accepted your invite and messaged you.`);
 }
 
 function addAutoMessage(student, context) {
@@ -416,12 +417,38 @@ function renderCourses() {
 }
 
 function setupProfileForm() {
+    restoreProfileForm();
+
     $("profileForm").addEventListener("submit", event => {
         event.preventDefault();
+
+        const form = $("profileForm");
+        const inputs = form.querySelectorAll("input, select, textarea");
+
+        inputs.forEach(input => {
+            if (input.id) {
+                savedProfile[input.id] = input.value;
+            }
+        });
+
+        localStorage.setItem("savedProfile", JSON.stringify(savedProfile));
+
         const name = $("profileName").value.trim() || "Student";
         $("userName").textContent = name.split(" ")[0];
+
         showToast("Profile saved.");
     });
+}
+
+function restoreProfileForm() {
+    Object.keys(savedProfile).forEach(id => {
+        const input = $(id);
+        if (input) input.value = savedProfile[id];
+    });
+
+    if (savedProfile.profileName) {
+        $("userName").textContent = savedProfile.profileName.split(" ")[0];
+    }
 }
 
 function updateAllViews() {
