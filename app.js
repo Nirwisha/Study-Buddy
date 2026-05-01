@@ -91,7 +91,7 @@ function showTab(tabName) {
 }
 
 function filterBuddies() {
-    const course = $("courseFilter").value;
+    const course = $("courseFilter")?.value || "";
 
     filteredStudents = course
         ? students.filter(student => student.courses.includes(course))
@@ -155,14 +155,17 @@ function renderBuddies() {
 
 function nextCard() {
     if (filteredStudents.length === 0) return;
+
     cardIndex = (cardIndex + 1) % filteredStudents.length;
     renderBuddies();
 }
 
 function prevCard() {
     if (filteredStudents.length === 0) return;
+
     cardIndex =
         (cardIndex - 1 + filteredStudents.length) % filteredStudents.length;
+
     renderBuddies();
 }
 
@@ -216,7 +219,7 @@ function inviteBuddy(studentId, sessionTitle = "Study Buddy Match") {
     updateAllViews();
     closeProfileViewModal();
 
-    showToast(`${student.name} accepted your invite and messaged you.`);
+    showToast(`${student.name} accepted your invite`);
 }
 
 function addAutoMessage(student, context) {
@@ -300,9 +303,12 @@ function handleCreateSession(event) {
     if (buddyId) {
         const student = students.find(item => item.id === buddyId);
         inviteBuddy(buddyId, session.goal);
-        joinedSessions.unshift({ ...session, with: student.name });
+
+        if (student) {
+            joinedSessions.unshift({ ...session, with: student.name });
+        }
     } else {
-        showToast("Study session created.");
+        showToast("Study session created");
     }
 
     closeCreateSessionModal();
@@ -386,11 +392,11 @@ function renderInvites() {
 
     const sentHTML = sentInvites.length
         ? sentInvites.map(inviteCard).join("")
-        : `<div class="empty-state"><p>You haven't sent any invites yet</p></div>`;
+        : "";
 
     const receivedHTML = receivedInvites.length
         ? receivedInvites.map(inviteCard).join("")
-        : `<div class="empty-state"><p>You have no received invites yet</p></div>`;
+        : "";
 
     setHTML(["sentInvitesContent", "sentInvitesList"], sentHTML);
     setHTML(["receivedInvitesContent", "receivedInvitesList"], receivedHTML);
@@ -499,7 +505,7 @@ function saveCourseEntry() {
     const professor = $("newCourseProfessor")?.value.trim() || "";
 
     if (!name) {
-        showToast("Please enter a course name.");
+        showToast("Please enter a course name");
         return;
     }
 
@@ -545,7 +551,7 @@ function setupProfileForm() {
         const name = $("profileName")?.value.trim() || "Student";
         setText(["userName"], name.split(" ")[0]);
 
-        showToast("Profile saved.");
+        showToast("Profile saved");
     });
 }
 
@@ -605,7 +611,11 @@ function showToast(message) {
 
     setTimeout(() => {
         toast.classList.remove("show");
-    }, 2800);
+    }, 1000);
+
+    setTimeout(() => {
+        toast.textContent = "";
+    }, 1300);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
