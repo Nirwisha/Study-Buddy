@@ -287,33 +287,33 @@ function fillInviteSelect() {
 function handleCreateSession(event) {
     event.preventDefault();
 
-    const session = {
-        id: Date.now(),
-        date: $("sessionDate")?.value || "",
-        time: $("sessionTime")?.value || "",
-        location: $("sessionLocation")?.value || "",
-        type: $("sessionType")?.value || "Study Session",
-        goal: $("sessionGoal")?.value || "Study together"
+    // Get the session data from the form
+    const sessionData = {
+        date: $("sessionDate").value,
+        time: $("sessionTime").value,
+        location: $("sessionLocation").value,
+        type: $("sessionType").value,
+        goal: $("sessionGoal").value
     };
 
-    createdSessions.unshift(session);
-
-    const buddyId = Number($("sessionInviteBuddy")?.value || 0);
-
-    if (buddyId) {
-        const student = students.find(item => item.id === buddyId);
-        inviteBuddy(buddyId, session.goal);
-
-        if (student) {
-            joinedSessions.unshift({ ...session, with: student.name });
-        }
+    if (editingSession) {
+        // If editing an existing session, update it
+        Object.assign(editingSession, sessionData);
+        showToast("Session updated successfully!");
     } else {
-        showToast("Study session created");
+        // If creating a new session, create a new session object with unique ID
+        const newSession = { ...sessionData, id: Date.now() };  // Unique ID
+        createdSessions.unshift(newSession);  // Add new session to the array
+        showToast("Session created successfully!");
     }
 
+    // Reset the form and close the modal
     closeCreateSessionModal();
-    updateAllViews();
-    showTab("sessions");
+    updateAllViews();  // Update views (sessions, invites, etc.)
+    renderUpcomingSessions();  // Make sure the upcoming sessions are shown
+
+    // Clear the editing session variable
+    editingSession = null;
 }
 
 function showSessionType(type) {
@@ -342,32 +342,21 @@ function showInviteType(type) {
 
 function renderSessions() {
     const createdHTML = createdSessions.length
-        ? createdSessions.map(session => sessionCard(session)).join("")
-        : `<div class="empty-state"><p>No sessions created yet</p></div>`;
-
-    const joinedHTML = joinedSessions.length
-        ? joinedSessions.map(session => {
-            return sessionCard(session, session.with);
+        ? createdSessions.map(session => {
+            return `
+                <div class="info-card">
+                    <h3>${session.type}</h3>
+                    <p><strong>Goal:</strong> ${session.goal}</p>
+                    <p><strong>When:</strong> ${formatDate(session.date)} at ${formatTime(session.time)}</p>
+                    <p><strong>Where:</strong> ${session.location}</p>
+                    <!-- Include an Edit button for created sessions -->
+                    <button class="btn btn-secondary" onclick="editSession(${session.id})">Edit</button>
+                </div>
+            `;
         }).join("")
-        : `<div class="empty-state"><p>No joined sessions yet</p></div>`;
-
-    const upcomingHTML = createdSessions.length
-        ? createdSessions.slice(0, 3).map(session => {
-            return sessionCard(session);
-        }).join("")
-        : `
-            <div class="empty-state">
-                <p>No upcoming sessions scheduled</p>
-                <button class="btn btn-primary"
-                    onclick="showTab('sessions')">
-                    Create a Session
-                </button>
-            </div>
-        `;
+        : `<div class="empty-state"><p>No created sessions yet</p></div>`;
 
     setHTML(["createdSessionsContent", "createdSessionsList"], createdHTML);
-    setHTML(["joinedSessionsContent", "joinedSessionsList"], joinedHTML);
-    setHTML(["upcomingSessions"], upcomingHTML);
 }
 
 function sessionCard(session, buddyName = "") {
@@ -384,6 +373,196 @@ function sessionCard(session, buddyName = "") {
         </div>
     `;
 }
+
+// create session edit function for ONLY created sessions
+// Track which session is being edited
+let editingSession = null;
+
+// Show Create Session Modal with data to edit
+function editSession(sessionId) {
+    // Find the session by ID
+    const session = createdSessions.find(item => item.id === sessionId);
+    if (!session) return;
+
+    // Set the session as being edited
+    editingSession = session;
+
+    // Fill the form with the existing session data
+    $("sessionDate").value = session.date;
+    $("sessionTime").value = session.time;
+    $("sessionLocation").value = session.location;
+    $("sessionType").value = session.type;
+    $("sessionGoal").value = session.goal;
+
+    // Show the modal
+    openCreateSessionModal();
+}
+
+// Save the session after editing or creating a new one
+function handleCreateSession(event) {
+    event.preventDefault();
+
+    // Get the session data from the form
+    const sessionData = {
+        date: $("sessionDate").value,
+        time: $("sessionTime").value,
+        location: $("sessionLocation").value,
+        type: $("sessionType").value,
+        goal: $("sessionGoal").value
+    };
+
+    if (editingSession) {
+        // If editing an existing session, update it
+        Object.assign(editingSession, sessionData);
+        showToast("Session updated successfully!");
+    } else {
+        // If creating a new session, create a new session object
+        const newSession = { ...sessionData, id: Date.now() };
+        createdSessions.unshift(newSession);
+        showToast("Session created successfully!");
+    }
+
+    // Reset the form and close the modal
+    closeCreateSessionModal();
+    updateAllViews();
+
+    // Clear the editing session variable
+    editingSession = null;
+}
+
+// Disable edit button for joined sessions
+function renderJoinedSessions() {
+    const html = joinedSessions.length
+        ? joinedSessions.map(session => {
+            return `
+                <div class="info-card">
+                    <h3>${session.type}</h3>
+                    <p><strong>Goal:</strong> ${session.goal}</p>
+                    <p><strong>When:</strong> ${formatDate(session.date)} at ${formatTime(session.time)}</p>
+                    <p><strong>Where:</strong> ${session.location}</p>
+                    <p><strong>With:</strong> ${session.with}</p>
+                    <!-- No Edit Button here for joined sessions -->
+                </div>
+            `;
+        }).join("")
+        : `<div class="empty-state"><p>No joined sessions yet</p></div>`;
+
+    setHTML(["joinedSessionsContent", "joinedSessionsList"], html);
+}
+
+// Function to open the modal for creating a session
+function openCreateSessionModal() {
+    fillInviteSelect();
+
+    const modal = $("createSessionModal");
+    if (modal) modal.classList.add("show");
+}
+
+// Function to close the session modal
+function closeCreateSessionModal() {
+    const modal = $("createSessionModal");
+    const form = $("createSessionForm");
+
+    if (modal) modal.classList.remove("show");
+    if (form) form.reset();
+}
+
+// Call this function to render sessions and distinguish between "created" and "joined" sessions
+function renderSessions() {
+    const createdHTML = createdSessions.length
+        ? createdSessions.map(session => {
+            return `
+                <div class="info-card">
+                    <h3>${session.type}</h3>
+                    <p><strong>Goal:</strong> ${session.goal}</p>
+                    <p><strong>When:</strong> ${formatDate(session.date)} at ${formatTime(session.time)}</p>
+                    <p><strong>Where:</strong> ${session.location}</p>
+                    <!-- Include an Edit button for created sessions -->
+                    <button class="btn btn-secondary" onclick="editSession(${session.id})">Edit</button>
+                </div>
+            `;
+        }).join("")
+        : `<div class="empty-state"><p>No created sessions yet</p></div>`;
+
+    setHTML(["createdSessionsContent", "createdSessionsList"], createdHTML);
+}
+
+// rendering sessions into the upcoming sessions in homepage
+function renderUpcomingSessions() {
+    // Get the upcoming sessions (limit to the first 3 created sessions)
+    const upcomingHTML = createdSessions.length
+        ? createdSessions.slice(0, 3).map(session => {
+            return `
+                <div class="info-card">
+                    <h3>${session.type}</h3>
+                    <p><strong>Goal:</strong> ${session.goal}</p>
+                    <p><strong>When:</strong> ${formatDate(session.date)} at ${formatTime(session.time)}</p>
+                    <p><strong>Where:</strong> ${session.location}</p>
+                </div>
+            `;
+        }).join("")
+        : `
+            <div class="empty-state">
+                <p>No upcoming sessions scheduled</p>
+                <button class="btn btn-primary" onclick="showTab('sessions')">
+                    Create a Session
+                </button>
+            </div>
+        `;
+    
+    // Render the upcoming sessions
+    setHTML(["upcomingSessions"], upcomingHTML);
+}
+
+// updates it
+function handleCreateSession(event) {
+    event.preventDefault();
+
+    // Get the session data from the form
+    const sessionData = {
+        date: $("sessionDate").value,
+        time: $("sessionTime").value,
+        location: $("sessionLocation").value,
+        type: $("sessionType").value,
+        goal: $("sessionGoal").value
+    };
+
+    if (editingSession) {
+        // If editing an existing session, update it
+        Object.assign(editingSession, sessionData);
+        showToast("Session updated successfully!");
+    } else {
+        // If creating a new session, create a new session object
+        const newSession = { ...sessionData, id: Date.now() };
+        createdSessions.unshift(newSession);
+        showToast("Session created successfully!");
+    }
+
+    // Reset the form and close the modal
+    closeCreateSessionModal();
+    updateAllViews();
+    renderUpcomingSessions();  // Ensure the home page is updated
+
+    // Clear the editing session variable
+    editingSession = null;
+}
+
+// calls it
+function updateAllViews() {
+    renderSessions();  // Render sessions tab
+    renderInvites();  // Render invites tab
+    renderConversations();  // Render conversations tab
+    renderUpcomingSessions();  // Update the home page with upcoming sessions
+}
+
+// ensures is called
+document.addEventListener("DOMContentLoaded", () => {
+    renderBuddies();
+    renderCourses();
+    updateAllViews();  // Make sure sessions and invites are updated
+    renderUpcomingSessions();  // Render upcoming sessions
+    setupProfileForm();
+});
 
 function renderInvites() {
     setText(["sentInviteCount"], sentInvites.length);
@@ -624,3 +803,66 @@ document.addEventListener("DOMContentLoaded", () => {
     updateAllViews();
     setupProfileForm();
 });
+
+// invited buddy pop up user feedback
+function showToast(message) {
+    let toastOverlay = document.createElement("div");
+    toastOverlay.className = "toast-overlay";
+
+    // Create the toast container
+    let toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+
+    // Create the close button
+    let closeButton = document.createElement("button");
+    closeButton.className = "close-btn";
+    closeButton.textContent = "×";
+    closeButton.onclick = () => closeToast(toastOverlay);
+    
+    // Append the close button to the toast
+    toast.appendChild(closeButton);
+    
+    // Append the toast to the overlay
+    toastOverlay.appendChild(toast);
+    
+    // Append the overlay to the body
+    document.body.appendChild(toastOverlay);
+
+    // Show the toast
+    setTimeout(() => {
+        toastOverlay.style.display = "flex";  // Show the toast
+        toast.classList.add("show");
+    }, 10);
+
+    // Automatically hide after 5 seconds if not closed by user
+    setTimeout(() => {
+        closeToast(toastOverlay);
+    }, 5000);
+}
+
+function closeToast(toastOverlay) {
+    const toast = toastOverlay.querySelector(".toast");
+    if (toast) toast.classList.remove("show");
+    
+    toastOverlay.classList.add("hide");  // Hide the overlay and toast
+    setTimeout(() => {
+        toastOverlay.remove();  // Remove the toast and overlay from the DOM
+    }, 500);
+}
+
+// invite coard seperation for more readability 
+function inviteCard(invite) {
+    return `
+        <div class="info-card invite-card">
+            <h3>${invite.title}</h3>
+            <p><strong>Buddy:</strong> ${invite.name}</p>
+            <p><strong>Status:</strong> 
+                <span class="invite-status ${invite.status.toLowerCase()}">
+                    ${invite.status}
+                </span>
+            </p>
+            <div class="invite-divider"></div> <!-- Divider between invites -->
+        </div>
+    `;
+}
