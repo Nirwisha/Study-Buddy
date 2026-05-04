@@ -797,13 +797,6 @@ function showToast(message) {
     }, 1300);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    renderBuddies();
-    renderCourses();
-    updateAllViews();
-    setupProfileForm();
-});
-
 // invited buddy pop up user feedback
 function showToast(message) {
     let toastOverlay = document.createElement("div");

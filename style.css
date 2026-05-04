@@ -899,7 +899,6 @@ body {
 }
 
 .toast.show {
-    display: flex;
     opacity: 1;
     transition: opacity 0.5s ease;
 }
