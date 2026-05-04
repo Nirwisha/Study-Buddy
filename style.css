@@ -173,6 +173,12 @@ body {
 .btn-secondary {
     background-color: #e5e7eb;
     color: #111827;
+    margin-top: 15px
+}
+
+.btn-secondary:hover {
+    background-color: #abc0bb;
+    color: rgb(37, 40, 38);
 }
 
 .btn-large {
