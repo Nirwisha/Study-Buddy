@@ -455,6 +455,14 @@ function openCreateSessionModal() {
     fillInviteSelect();
 
     const modal = $("createSessionModal");
+    const submitBtn = $("sessionSubmitBtn");
+
+    if (editingSession) {
+        submitBtn.textContent = "Save Session";
+    } else {
+        submitBtn.textContent = "Create Session";
+    }
+
     if (modal) modal.classList.add("show");
 }
 
@@ -462,9 +470,11 @@ function openCreateSessionModal() {
 function closeCreateSessionModal() {
     const modal = $("createSessionModal");
     const form = $("createSessionForm");
+    const submitBtn = $("sessionSubmitBtn");
 
     if (modal) modal.classList.remove("show");
     if (form) form.reset();
+    if (submitBtn) submitBtn.textContent = "Create Session";
 }
 
 // Call this function to render sessions and distinguish between "created" and "joined" sessions
